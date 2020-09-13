@@ -87,15 +87,21 @@ void changeSpeedSphereOnCollision(float x1, float y1, float* vx1, float* vy1, in
     float projectionVectorOnSpeedSphere2 = projectionVector( *vx2, *vy2, xAxis, yAxis);
 
     float reducedMassSpheres = reducedMass( mass1, mass2);
-    
+
     float dv1 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass1;
     float dv2 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass2;
 
-    *vx1 += -2 * dv1 * xAxis / moduleAxis;
-    *vy1 += -2 * dv1 * yAxis / moduleAxis;
+    if (dv1 < 0)
+    {
+        *vx1 += -2 * dv1 * xAxis / moduleAxis;
+        *vy1 += -2 * dv1 * yAxis / moduleAxis;
+    }
 
-    *vx2 += 2 * dv2 * xAxis / moduleAxis;
-    *vy2 += 2 * dv2 * yAxis / moduleAxis;
+    if (dv2 < 0)
+    {
+        *vx2 += 2 * dv2 * xAxis / moduleAxis;
+        *vy2 += 2 * dv2 * yAxis / moduleAxis;
+    }
 }
 
 void drawTrack(int x, int y, int radius, int red, int green, int blue, float vx, float vy, const float DT)
@@ -131,7 +137,7 @@ int main()
 
     const float DT = 0.2;
 
-    int redFill = 0;
+    int redFill = 20;
     int greenFill = 0;
     int blueFill = 0;
     COLORREF fillColor = RGB (redFill, greenFill, blueFill);
@@ -180,6 +186,7 @@ int main()
     txCreateWindow(X_MAX, Y_MAX);
     txSetFillColour( fillColor);
     txSetColour( lineColor);
+    txClear();
 
     while (true)
     {
