@@ -67,11 +67,6 @@ float projectionVector( float xVector, float yVector, float xAxis, float yAxis)
 
 float reducedMass( float m1, float m2)
 {
-    //std::cout << m1;
-    //std::cout << "\n";
-    //std::cout << m2;
-    //std::cout << "\n";
-
     float rm = (m1 * m2) / (m1 + m2);
     return rm;
 }
@@ -88,33 +83,13 @@ void changeSpeedSphereOnCollision(float x1, float y1, float* vx1, float* vy1, in
     float yAxis = y1 - y2;
     float moduleAxis = pow (xAxis * xAxis + yAxis * yAxis, 0.5 );
 
-    //std::cout << xAxis;
-    //std::cout << "\n";
-    //std::cout << yAxis;
-    //std::cout << "\n";
-    //std::cout << moduleAxis;
-    //std::cout << "\n";
-
     float projectionVectorOnSpeedSphere1 = projectionVector( *vx1, *vy1, xAxis, yAxis);
     float projectionVectorOnSpeedSphere2 = projectionVector( *vx2, *vy2, xAxis, yAxis);
 
-    //std::cout << projectionVectorOnSpeedSphere1;
-    //std::cout << "\n";
-    //std::cout << projectionVectorOnSpeedSphere2;
-    //std::cout << "\n";
-
     float reducedMassSpheres = reducedMass( mass1, mass2);
-
-    //std::cout << reducedMassSpheres;
-    //std::cout << "\n";
-
+    
     float dv1 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass1;
     float dv2 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass2;
-
-    //std::cout << dv1;
-    //std::cout << "\n";
-    //std::cout << dv2;
-    //std::cout << "\n";
 
     *vx1 += -2 * dv1 * xAxis / moduleAxis;
     *vy1 += -2 * dv1 * yAxis / moduleAxis;
