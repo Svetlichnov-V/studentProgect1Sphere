@@ -67,6 +67,11 @@ float projectionVector( float xVector, float yVector, float xAxis, float yAxis)
 
 float reducedMass( float m1, float m2)
 {
+    //std::cout << m1;
+    //std::cout << "\n";
+    //std::cout << m2;
+    //std::cout << "\n";
+
     float rm = (m1 * m2) / (m1 + m2);
     return rm;
 }
@@ -83,13 +88,33 @@ void changeSpeedSphereOnCollision(float x1, float y1, float* vx1, float* vy1, in
     float yAxis = y1 - y2;
     float moduleAxis = pow (xAxis * xAxis + yAxis * yAxis, 0.5 );
 
+    //std::cout << xAxis;
+    //std::cout << "\n";
+    //std::cout << yAxis;
+    //std::cout << "\n";
+    //std::cout << moduleAxis;
+    //std::cout << "\n";
+
     float projectionVectorOnSpeedSphere1 = projectionVector( *vx1, *vy1, xAxis, yAxis);
     float projectionVectorOnSpeedSphere2 = projectionVector( *vx2, *vy2, xAxis, yAxis);
 
+    //std::cout << projectionVectorOnSpeedSphere1;
+    //std::cout << "\n";
+    //std::cout << projectionVectorOnSpeedSphere2;
+    //std::cout << "\n";
+
     float reducedMassSpheres = reducedMass( mass1, mass2);
+
+    //std::cout << reducedMassSpheres;
+    //std::cout << "\n";
 
     float dv1 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass1;
     float dv2 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass2;
+
+    //std::cout << dv1;
+    //std::cout << "\n";
+    //std::cout << dv2;
+    //std::cout << "\n";
 
     if (dv1 < 0)
     {
@@ -143,10 +168,10 @@ int main()
     COLORREF fillColor = RGB (redFill, greenFill, blueFill);
     COLORREF lineColor = RGB (0, 0, 0);
 
-    int sphereRadius1 = 50;
-    int sphereRadius2 = 50;
-    int sphereRadius3 = 50;
-    int numberOfCicles = 50;
+    int sphereRadius1 = 25;
+    int sphereRadius2 = 25;
+    int sphereRadius3 = 25;
+    int numberOfCicles = 25;
 
     int red1 = 0;
     int green1 = 0;
@@ -180,8 +205,18 @@ int main()
     double mouseX = 0;
     double mouseY = 0;
 
-    float ax = 0;
-    float ay = 0;
+    float ax1 = 0;
+    float ay1 = 0;
+
+    float ax2 = 0;
+    float ay2 = 0;
+
+    float ax3 = 0.001;
+    float ay3 = 0.001;
+
+    float controllability = 20;
+
+    float coefficientSlowdown = 0.025;
 
     txCreateWindow(X_MAX, Y_MAX);
     txSetFillColour( fillColor);
@@ -196,8 +231,8 @@ int main()
         drawTrack(x2, y2, sphereRadius2, redFill,  greenFill,  blueFill,  vx2, vy2, DT);
         drawTrack(x3, y3, sphereRadius3, redFill,  greenFill,  blueFill,  vx3, vy3, DT);
 
-        ax = 0;
-        ay = 0;
+        ax1 = 0;
+        ay1 = 0;
 
         if (txMouseButtons() > 0 )
         {
@@ -208,16 +243,16 @@ int main()
             float differnceMouseYAndY1 = mouseY - y1;
             float modeleDiffernceMouseAndSphere1 = moduleVector( differnceMouseXAndX1, differnceMouseYAndY1);
 
-            ax += 20 * differnceMouseXAndX1 / modeleDiffernceMouseAndSphere1;
-            ay += 20 * differnceMouseYAndY1 / modeleDiffernceMouseAndSphere1;
+            ax1 += controllability * differnceMouseXAndX1 / modeleDiffernceMouseAndSphere1;
+            ay1 += controllability * differnceMouseYAndY1 / modeleDiffernceMouseAndSphere1;
         }
 
-        ax += -vx1 * 0.025;
-        ay += -vy1 * 0.025;
+        ax1 += -vx1 * coefficientSlowdown;
+        ay1 += -vy1 * coefficientSlowdown;
 
-        moveSphere(&x1, &y1, &vx1, &vy1, DT, ax, ay);
-        moveSphere(&x2, &y2, &vx2, &vy2, DT, 0, 0);
-        moveSphere(&x3, &y3, &vx3, &vy3, DT, 0.001, 0.001);
+        moveSphere(&x1, &y1, &vx1, &vy1, DT, ax1, ay1);
+        moveSphere(&x2, &y2, &vx2, &vy2, DT, ax2, ay2);
+        moveSphere(&x3, &y3, &vx3, &vy3, DT, ax3, ay3);
 
         collisionSphere(x1, y1, &vx1, &vy1, X_MAX, Y_MAX, sphereRadius1 );
         collisionSphere(x2, y2, &vx2, &vy2, X_MAX, Y_MAX, sphereRadius2 );
