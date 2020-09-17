@@ -2,27 +2,34 @@
 #include <iostream>
 #include <math.h>
 
-void drawSphere( int x0, int y0, int sphereRadius, int numberOfCicles, int red, int green, int blue )
+void drawSphere( int x0, int y0, int sphereRadius, int numberOfCicles, int red, int green, int blue, bool constColour = false )
 {
     COLORREF fillColor = txGetFillColor();
     COLORREF lineColor = txGetColor();
 
     for (int i = 0; i < numberOfCicles; i++ )
     {
-        int currentCicleRed   = red * i / numberOfCicles;
-        int currentCicleGreen = green * i / numberOfCicles;
-        int currentCicleBlue  = blue * i / numberOfCicles;
+        int currentCicleRed   = red;
+        int currentCicleGreen = green;
+        int currentCicleBlue  = blue;
+
+        if ( !constColour)
+        {
+            currentCicleRed   = red   * i / numberOfCicles;
+            currentCicleGreen = green * i / numberOfCicles;
+            currentCicleBlue  = blue  * i / numberOfCicles;
+        }
         int currentCicleRadius = sphereRadius - sphereRadius * i / numberOfCicles;
         int x = x0 + (sphereRadius * i / 2) / numberOfCicles;
         int y = y0 - (sphereRadius * i / 2) / numberOfCicles;
 
         txSetFillColour( RGB ( currentCicleRed, currentCicleGreen, currentCicleBlue));
-        txSetColour    ( RGB (currentCicleRed, currentCicleGreen, currentCicleBlue));
+        txSetColour    ( RGB ( currentCicleRed, currentCicleGreen, currentCicleBlue));
         txCircle(x, y, currentCicleRadius);
     }
 
     txSetFillColour( fillColor);
-    txSetColour( lineColor);
+    txSetColour    ( lineColor);
 }
 
 void moveSphere(float* x, float* y, float* vx, float* vy, const float DT, float ax, float ay)
@@ -129,7 +136,7 @@ void changeSpeedSphereOnCollision(float x1, float y1, float* vx1, float* vy1, in
     }
 }
 
-void drawTrack(int x, int y, int radius, int red, int green, int blue, float vx, float vy, const float DT)
+void drawTrack(float xNew, float yNew, float xOld, float yOld, int radius, int red, int green, int blue)
 {
     COLORREF fillColor = txGetFillColor();
     COLORREF lineColor = txGetColor();
@@ -137,15 +144,14 @@ void drawTrack(int x, int y, int radius, int red, int green, int blue, float vx,
     txSetFillColour( RGB ( red, green, blue));
     txSetColour    ( RGB ( red, green, blue));
 
-    int numberOfCiclesInDrawTrack = 10;
-    for ( int i = 0; i <= numberOfCiclesInDrawTrack + 2; ++i)
-            txCircle(x - i * vx * DT / numberOfCiclesInDrawTrack, y - i * vy * DT / numberOfCiclesInDrawTrack, radius);
+    float numberOfCiclesInDrawTrack = 10;
+    for ( int i = 0; i <= numberOfCiclesInDrawTrack + 1; ++i)
+            txCircle(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack, radius);
 
-    txSetFillColour( fillColor);
-    txSetColour    ( lineColor);
+     drawSphere( xOld, yOld, radius, numberOfCiclesInDrawTrack, red, green, blue, true );
 }
 
-void controlSphere1(float* ax, float* ay, float vx, float vy, float x, float y, const float controllability, const float coefficientSlowdown)
+void controlSphere(float* ax, float* ay, float vx, float vy, float x, float y, const float controllability, const float coefficientSlowdown)
 {
     *ax = 0;
     *ay = 0;
