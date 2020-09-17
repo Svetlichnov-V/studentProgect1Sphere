@@ -56,6 +56,15 @@ int main()
     float x3 = 200;
     float y3 = 800;
 
+    float xOld1 = 600;
+    float yOld1 = 200;
+
+    float xOld2 = 1200;
+    float yOld2 = 800;
+
+    float xOld3 = 200;
+    float yOld3 = 800;
+
     const int MASS_1 = 1;
     const int MASS_2 = 2;
     const int MASS_3 = 6;
@@ -80,7 +89,7 @@ int main()
 
     while (true)
     {
-        controlSphere1(&ax1, &ay1, vx1, vy1, x1, y1, controllability, coefficientSlowdown);
+        controlSphere(&ax1, &ay1, vx1, vy1, x1, y1, controllability, coefficientSlowdown);
 
         collisionSphere(x1, y1, &vx1, &vy1, X_MAX, Y_MAX, sphereRadius1 );
         collisionSphere(x2, y2, &vx2, &vy2, X_MAX, Y_MAX, sphereRadius2 );
@@ -95,15 +104,24 @@ int main()
         if ( isCollidedTwoSpheres (x3, y3, sphereRadius3, x2, y2, sphereRadius2))
             changeSpeedSphereOnCollision(x3, y3, &vx3, &vy3, MASS_3, x2, y2, &vx2, &vy2, MASS_2);
 
+        xOld1 = x1;
+        yOld1 = y1;
+
+        xOld2 = x2;
+        yOld2 = y2;
+
+        xOld3 = x3;
+        yOld3 = y3;
+
         moveSphere(&x1, &y1, &vx1, &vy1, DT, ax1, ay1);
         moveSphere(&x2, &y2, &vx2, &vy2, DT, ax2, ay2);
         moveSphere(&x3, &y3, &vx3, &vy3, DT, ax3, ay3);
 
         txBegin();
 
-        drawTrack(x1, y1, sphereRadius1, redTrack, greenTrack, blueTrack, vx1, vy1, DT);
-        drawTrack(x2, y2, sphereRadius2, redFill,  greenFill,  blueFill,  vx2, vy2, DT);
-        drawTrack(x3, y3, sphereRadius3, redFill,  greenFill,  blueFill,  vx3, vy3, DT);
+        drawTrack(x1, y1, xOld1, yOld1, sphereRadius1, redTrack, greenTrack, blueTrack);
+        drawTrack(x2, y2, xOld2, yOld2, sphereRadius2, redFill,  greenFill,  blueFill);
+        drawTrack(x3, y3, xOld3, yOld3, sphereRadius3, redFill,  greenFill,  blueFill);
 
         drawSphere(x1, y1, sphereRadius1, numberOfCicles, red1, green1, blue1);
         drawSphere(x2, y2, sphereRadius2, numberOfCicles, red2, green2, blue2);
@@ -113,3 +131,4 @@ int main()
     }
     return 0;
 }
+
