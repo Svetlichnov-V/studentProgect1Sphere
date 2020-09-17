@@ -90,6 +90,9 @@ int main()
 
     while (true)
     {
+        ax1 = 0;
+        ay1 = 0;
+        
         controlSphere(&ax1, &ay1, vx1, vy1, x1, y1, controllability, coefficientSlowdown);
 
         collisionSphere(x1, y1, &vx1, &vy1, X_MAX, Y_MAX, sphereRadius1 );
