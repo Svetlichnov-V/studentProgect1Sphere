@@ -148,12 +148,15 @@ void drawTrack(float xNew, float yNew, float xOld, float yOld, int radius, int n
             txCircle(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack, radius);
 
      drawSphere( xOld, yOld, radius, numberOfCiclesInDrawTrack, red, green, blue, true );
+
+     txSetFillColour( fillColor);
+     txSetColour    ( lineColor);
 }
 
 void controlSphere(float* ax, float* ay, float vx, float vy, float x, float y, const float controllability, const float coefficientSlowdown)
 {
-    *ax = 0;
-    *ay = 0;
+    *ax += -vx * coefficientSlowdown;
+    *ay += -vy * coefficientSlowdown;
 
     if (txMouseButtons() > 0 )
     {
@@ -167,7 +170,4 @@ void controlSphere(float* ax, float* ay, float vx, float vy, float x, float y, c
         *ax += controllability * differnceMouseXAndX1 / modeleDiffernceMouseAndSphere1;
         *ay += controllability * differnceMouseYAndY1 / modeleDiffernceMouseAndSphere1;
     }
-
-    *ax += -vx * coefficientSlowdown;
-    *ay += -vy * coefficientSlowdown;
 }
