@@ -30,6 +30,7 @@ int main()
     int sphereRadius2 = 50;
     int sphereRadius3 = 50;
     int numberOfCicles = 50;
+    int numberOfCiclesInDrawTrack = 10;
 
     int red1 = 0;
     int green1 = 0;
@@ -119,9 +120,9 @@ int main()
 
         txBegin();
 
-        drawTrack(x1, y1, xOld1, yOld1, sphereRadius1, redTrack, greenTrack, blueTrack);
-        drawTrack(x2, y2, xOld2, yOld2, sphereRadius2, redFill,  greenFill,  blueFill);
-        drawTrack(x3, y3, xOld3, yOld3, sphereRadius3, redFill,  greenFill,  blueFill);
+        drawTrack(x1, y1, xOld1, yOld1, sphereRadius1, numberOfCiclesInDrawTrack, redTrack, greenTrack, blueTrack);
+        drawTrack(x2, y2, xOld2, yOld2, sphereRadius2, numberOfCiclesInDrawTrack, redFill,  greenFill,  blueFill);
+        drawTrack(x3, y3, xOld3, yOld3, sphereRadius3, numberOfCiclesInDrawTrack, redFill,  greenFill,  blueFill);
 
         drawSphere(x1, y1, sphereRadius1, numberOfCicles, red1, green1, blue1);
         drawSphere(x2, y2, sphereRadius2, numberOfCicles, red2, green2, blue2);
