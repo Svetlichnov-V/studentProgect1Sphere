@@ -136,7 +136,7 @@ void changeSpeedSphereOnCollision(float x1, float y1, float* vx1, float* vy1, in
     }
 }
 
-void drawTrack(float xNew, float yNew, float xOld, float yOld, int radius, int red, int green, int blue)
+void drawTrack(float xNew, float yNew, float xOld, float yOld, int radius, int numberOfCiclesInDrawTrack, int red, int green, int blue)
 {
     COLORREF fillColor = txGetFillColor();
     COLORREF lineColor = txGetColor();
@@ -144,8 +144,7 @@ void drawTrack(float xNew, float yNew, float xOld, float yOld, int radius, int r
     txSetFillColour( RGB ( red, green, blue));
     txSetColour    ( RGB ( red, green, blue));
 
-    float numberOfCiclesInDrawTrack = 10;
-    for ( int i = 0; i <= numberOfCiclesInDrawTrack + 1; ++i)
+    for ( int i = 0; i <= numberOfCiclesInDrawTrack; ++i)
             txCircle(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack, radius);
 
      drawSphere( xOld, yOld, radius, numberOfCiclesInDrawTrack, red, green, blue, true );
