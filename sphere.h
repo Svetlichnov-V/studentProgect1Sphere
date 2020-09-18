@@ -78,7 +78,10 @@ float reducedMass( float m1, float m2)
     //std::cout << "\n";
     //std::cout << m2;
     //std::cout << "\n";
-
+    
+    if (m1 == 0 || m2 == 0)
+        return 0;
+    
     float rm = (m1 * m2) / (m1 + m2);
     return rm;
 }
@@ -91,6 +94,9 @@ float moduleVector(float x, float y)
 void changeSpeedSphereOnCollision(float x1, float y1, float* vx1, float* vy1, int mass1,
                                   float x2, float y2, float* vx2, float* vy2, int mass2 )
 {
+    if (mass1 == 0 || mass2 == 0)
+            return;
+    
     float xAxis = x1 - x2;
     float yAxis = y1 - y2;
     float moduleAxis = pow (xAxis * xAxis + yAxis * yAxis, 0.5 );
