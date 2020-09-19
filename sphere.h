@@ -2,23 +2,51 @@
 #include <iostream>
 #include <math.h>
 
-void drawSphere( int x0, int y0, int sphereRadius, int numberOfCicles, int red, int green, int blue, bool constColour = false )
+struct Vector2f
+{
+    float x;
+    float y;
+};
+
+struct Sphere
+{
+    Vector2f position;
+    Vector2f oldPosition;
+    Vector2f velosity;
+    Vector2f acceleration;
+    int radius;
+    int mass;
+    COLORREF colorSphere;
+    COLORREF colorTrack;
+};
+
+void drawSphere( Sphere* sphere, int numberOfCicles, bool constColour = false )
 {
     COLORREF fillColor = txGetFillColor();
     COLORREF lineColor = txGetColor();
 
+    unsigned int red   = txExtractColor(sphere -> colorSphere, TX_RED) ;
+    unsigned int green = txExtractColor(sphere -> colorSphere, TX_GREEN);
+    unsigned int blue  = txExtractColor(sphere -> colorSphere, TX_BLUE);
+
+    unsigned int currentCicleRed   = red;
+    unsigned int currentCicleGreen = green;
+    unsigned int currentCicleBlue  = blue;
+
+    int sphereRadius = sphere -> radius;
+
+    int x0 = sphere -> position.x;
+    int y0 = sphere -> position.y;
+
     for (int i = 0; i < numberOfCicles; i++ )
     {
-        int currentCicleRed   = red;
-        int currentCicleGreen = green;
-        int currentCicleBlue  = blue;
-
         if ( !constColour)
         {
             currentCicleRed   = red   * i / numberOfCicles;
             currentCicleGreen = green * i / numberOfCicles;
             currentCicleBlue  = blue  * i / numberOfCicles;
         }
+
         int currentCicleRadius = sphereRadius - sphereRadius * i / numberOfCicles;
         int x = x0 + (sphereRadius * i / 2) / numberOfCicles;
         int y = y0 - (sphereRadius * i / 2) / numberOfCicles;
@@ -32,32 +60,34 @@ void drawSphere( int x0, int y0, int sphereRadius, int numberOfCicles, int red, 
     txSetColour    ( lineColor);
 }
 
-void moveSphere(float* x, float* y, float* vx, float* vy, const float DT, float ax, float ay)
+void moveSphere( Sphere* sphere, const float DT)
 {
-    *x += *vx * DT + 0.5 * ax * DT * DT;
-    *y += *vy * DT + 0.5 * ay * DT * DT;
+    sphere -> position.x += sphere -> velosity.x * DT + 0.5 * sphere -> acceleration.x * DT * DT;
+    sphere -> position.y += sphere -> velosity.y * DT + 0.5 * sphere -> acceleration.y * DT * DT;
 
-    *vx += ax * DT;
-    *vy += ay * DT;
+    sphere -> velosity.x += sphere -> acceleration.x * DT;
+    sphere -> velosity.y += sphere -> acceleration.y * DT;
 }
 
-void collisionSphere(float x, float y, float* vx, float* vy, const int X_MAX, const int Y_MAX, int sphereRadius )
+void collisionSphere( Sphere* sphere, const int X_MAX, const int Y_MAX )
 {
-    if ((x > X_MAX - sphereRadius && *vx > 0) || (x < sphereRadius && *vx < 0))
-            *vx = - *vx;
-    if ((y > Y_MAX - sphereRadius && *vy > 0) || (y < sphereRadius && *vy < 0))
-            *vy = - *vy;
+    if ((sphere -> position.x > X_MAX - (sphere -> radius) && (sphere -> velosity.x) > 0)
+             || (sphere -> position.x < (sphere -> radius) && (sphere -> velosity.x) < 0))
+            sphere -> velosity.x = - sphere -> velosity.x;
+    if ((sphere -> position.y > Y_MAX - (sphere -> radius) && (sphere -> velosity.y) > 0)
+             || (sphere -> position.y < (sphere -> radius) && (sphere -> velosity.y) < 0))
+            sphere -> velosity.y = - sphere -> velosity.y;
 }
 
-bool isCollidedTwoSpheres(float x1, float y1, int radiusSphere1,float x2, float y2, int radiusSphere2 )
+bool isCollidedTwoSpheres( Sphere* sphere1, Sphere* sphere2 )
 {
-    int commonRadius = radiusSphere1 + radiusSphere2;
+    int commonRadius = (sphere1 -> radius) + (sphere2 -> radius);
     int commonRadiusSquared = commonRadius * commonRadius;
 
-    float dx = x1 - x2;
-    float dy = y1 - y2;
+    float dx = (sphere1 -> position.x) - (sphere2 -> position.x);
+    float dy = (sphere1 -> position.y) - (sphere2 -> position.y);
 
-    int distanceSquared = dx * dx + dy * dy;
+    float distanceSquared = dx * dx + dy * dy;
 
     if (distanceSquared < commonRadiusSquared)
         return true;
@@ -74,14 +104,9 @@ float projectionVector( float xVector, float yVector, float xAxis, float yAxis)
 
 float reducedMass( float m1, float m2)
 {
-    //std::cout << m1;
-    //std::cout << "\n";
-    //std::cout << m2;
-    //std::cout << "\n";
-    
     if (m1 == 0 || m2 == 0)
         return 0;
-    
+
     float rm = (m1 * m2) / (m1 + m2);
     return rm;
 }
@@ -91,89 +116,78 @@ float moduleVector(float x, float y)
     return pow (x * x + y * y, 0.5 );
 }
 
-void changeSpeedSphereOnCollision(float x1, float y1, float* vx1, float* vy1, int mass1,
-                                  float x2, float y2, float* vx2, float* vy2, int mass2 )
+void changeSpeedSphereOnCollision( Sphere* sphere1,
+                                   Sphere* sphere2 )
 {
-    if (mass1 == 0 || mass2 == 0)
+    if ( sphere1 -> mass == 0 || sphere2 -> mass == 0)
             return;
-    
-    float xAxis = x1 - x2;
-    float yAxis = y1 - y2;
+
+    float xAxis = sphere1 -> position.x - sphere2 -> position.x;
+    float yAxis = sphere1 -> position.y - sphere2 -> position.y;
     float moduleAxis = pow (xAxis * xAxis + yAxis * yAxis, 0.5 );
 
-    //std::cout << xAxis;
-    //std::cout << "\n";
-    //std::cout << yAxis;
-    //std::cout << "\n";
-    //std::cout << moduleAxis;
-    //std::cout << "\n";
+    float projectionVectorOnSpeedSphere1 = projectionVector( sphere1 -> velosity.x, sphere1 -> velosity.y, xAxis, yAxis);
+    float projectionVectorOnSpeedSphere2 = projectionVector( sphere2 -> velosity.x, sphere2 -> velosity.y, xAxis, yAxis);
 
-    float projectionVectorOnSpeedSphere1 = projectionVector( *vx1, *vy1, xAxis, yAxis);
-    float projectionVectorOnSpeedSphere2 = projectionVector( *vx2, *vy2, xAxis, yAxis);
+    float reducedMassSpheres = reducedMass( sphere1 -> mass, sphere2 -> mass);
 
-    //std::cout << projectionVectorOnSpeedSphere1;
-    //std::cout << "\n";
-    //std::cout << projectionVectorOnSpeedSphere2;
-    //std::cout << "\n";
-
-    float reducedMassSpheres = reducedMass( mass1, mass2);
-
-    //std::cout << reducedMassSpheres;
-    //std::cout << "\n";
-
-    float dv1 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass1;
-    float dv2 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / mass2;
-
-    //std::cout << dv1;
-    //std::cout << "\n";
-    //std::cout << dv2;
-    //std::cout << "\n";
+    float dv1 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / (sphere1 -> mass);
+    float dv2 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / (sphere2 -> mass);
 
     if (dv1 < 0)
     {
-        *vx1 += -2 * dv1 * xAxis / moduleAxis;
-        *vy1 += -2 * dv1 * yAxis / moduleAxis;
+        sphere1 -> velosity.x += -2 * dv1 * xAxis / moduleAxis;
+        sphere1 -> velosity.y += -2 * dv1 * yAxis / moduleAxis;
     }
 
     if (dv2 < 0)
     {
-        *vx2 += 2 * dv2 * xAxis / moduleAxis;
-        *vy2 += 2 * dv2 * yAxis / moduleAxis;
+        sphere2 -> velosity.x += 2 * dv2 * xAxis / moduleAxis;
+        sphere2 -> velosity.y += 2 * dv2 * yAxis / moduleAxis;
     }
 }
 
-void drawTrack(float xNew, float yNew, float xOld, float yOld, int radius, int numberOfCiclesInDrawTrack, int red, int green, int blue)
+void drawTrack( Sphere* sphere, int numberOfCiclesInDrawTrack)
 {
     COLORREF fillColor = txGetFillColor();
     COLORREF lineColor = txGetColor();
 
-    txSetFillColour( RGB ( red, green, blue));
-    txSetColour    ( RGB ( red, green, blue));
+    txSetFillColour( sphere -> colorTrack);
+    txSetColour    ( sphere -> colorTrack);
+
+    int xNew = sphere -> position.x;
+    int yNew = sphere -> position.y;
+    int xOld = sphere -> oldPosition.x;
+    int yOld = sphere -> oldPosition.y;
+    int radius = sphere -> radius;
 
     for ( int i = 0; i <= numberOfCiclesInDrawTrack; ++i)
             txCircle(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack, radius);
 
-     drawSphere( xOld, yOld, radius, numberOfCiclesInDrawTrack, red, green, blue, true );
+     Sphere sphereOld { Vector2f { xOld, yOld}, Vector2f { xOld, yOld}, Vector2f { 0, 0 }, Vector2f { 0, 0 },
+            radius, 0, sphere -> colorTrack, sphere -> colorTrack};
+
+     drawSphere( &sphereOld, numberOfCiclesInDrawTrack, true );
 
      txSetFillColour( fillColor);
      txSetColour    ( lineColor);
 }
 
-void controlSphere(float* ax, float* ay, float vx, float vy, float x, float y, const float controllability, const float coefficientSlowdown)
+void controlSphere( Sphere* sphere, const float controllability, const float coefficientSlowdown)
 {
-    *ax += -vx * coefficientSlowdown;
-    *ay += -vy * coefficientSlowdown;
+    sphere -> acceleration.x += - sphere -> velosity.x * coefficientSlowdown;
+    sphere -> acceleration.y += - sphere -> velosity.y * coefficientSlowdown;
 
     if (txMouseButtons() > 0 )
     {
         double mouseX = txMouseX();
         double mouseY = txMouseY();
 
-        float differnceMouseXAndX1 = mouseX - x;
-        float differnceMouseYAndY1 = mouseY - y;
+        float differnceMouseXAndX1 = mouseX - sphere -> position.x;
+        float differnceMouseYAndY1 = mouseY - sphere -> position.y;
         float modeleDiffernceMouseAndSphere1 = moduleVector( differnceMouseXAndX1, differnceMouseYAndY1);
 
-        *ax += controllability * differnceMouseXAndX1 / modeleDiffernceMouseAndSphere1;
-        *ay += controllability * differnceMouseYAndY1 / modeleDiffernceMouseAndSphere1;
+        sphere -> acceleration.x += controllability * differnceMouseXAndX1 / modeleDiffernceMouseAndSphere1;
+        sphere -> acceleration.y += controllability * differnceMouseYAndY1 / modeleDiffernceMouseAndSphere1;
     }
 }
