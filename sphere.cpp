@@ -11,6 +11,8 @@ int main()
 
     const int X_MAX = 1960;
     const int Y_MAX = 1080;
+    
+    //здесь написана какая-то ерунда
 
     //float vx1 = 100;
     //float vy1 = -70.0;
