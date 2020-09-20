@@ -1,6 +1,7 @@
-#include "TXLib.h"
-#include <iostream>
-#include <math.h>
+//#include "TXLib.h"
+#include "SFML/Graphics.hpp"
+//#include <iostream>
+//#include <math.h>
 
 struct Vector2f
 {
@@ -15,7 +16,7 @@ struct Sphere
     Vector2f velosity;
     Vector2f acceleration;
     int radius;
-    int mass;
+    const float MASS;
     COLORREF colorSphere;
     COLORREF colorTrack;
 };
@@ -102,7 +103,7 @@ float projectionVector( float xVector, float yVector, float xAxis, float yAxis)
     return pV;
 }
 
-float reducedMass( float m1, float m2)
+float reducedMass( const float m1, const float m2)
 {
     if (m1 == 0 || m2 == 0)
         return 0;
@@ -119,7 +120,7 @@ float moduleVector(float x, float y)
 void changeSpeedSphereOnCollision( Sphere* sphere1,
                                    Sphere* sphere2 )
 {
-    if ( sphere1 -> mass == 0 || sphere2 -> mass == 0)
+    if ( sphere1 -> MASS == 0 || sphere2 -> MASS == 0)
             return;
 
     float xAxis = sphere1 -> position.x - sphere2 -> position.x;
@@ -129,10 +130,10 @@ void changeSpeedSphereOnCollision( Sphere* sphere1,
     float projectionVectorOnSpeedSphere1 = projectionVector( sphere1 -> velosity.x, sphere1 -> velosity.y, xAxis, yAxis);
     float projectionVectorOnSpeedSphere2 = projectionVector( sphere2 -> velosity.x, sphere2 -> velosity.y, xAxis, yAxis);
 
-    float reducedMassSpheres = reducedMass( sphere1 -> mass, sphere2 -> mass);
+    float reducedMassSpheres = reducedMass( sphere1 -> MASS, sphere2 -> MASS);
 
-    float dv1 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / (sphere1 -> mass);
-    float dv2 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / (sphere2 -> mass);
+    float dv1 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / (sphere1 -> MASS);
+    float dv2 = reducedMassSpheres * (projectionVectorOnSpeedSphere1 - projectionVectorOnSpeedSphere2) / (sphere2 -> MASS);
 
     if (dv1 < 0)
     {

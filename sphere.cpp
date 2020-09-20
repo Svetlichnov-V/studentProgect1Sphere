@@ -1,88 +1,37 @@
-#include "TXLib.h"
-#include <iostream>
-#include <math.h>
-#include "sphere.h"
+//#include "TXLib.h"
+#include "SFML/Graphics.hpp"
+//#include <iostream>
+//#include <math.h>
+//#include "sphere.h"
 
 int main()
 {
-    Sphere sphere1 { Vector2f {200, 100}, Vector2f {200, 100}, Vector2f {20, 10}, Vector2f {2, 1}, 50, 1, RGB(0,   0,   255), RGB(0,   0,   100) };
-    Sphere sphere2 { Vector2f {600, 100}, Vector2f {600, 100}, Vector2f {20, 10}, Vector2f {0, 0}, 50, 1, RGB(0,   255, 255), RGB(0,   0,   0)   };
-    Sphere sphere3 { Vector2f {200, 400}, Vector2f {200, 400}, Vector2f {20, 10}, Vector2f {0, 0}, 50, 1, RGB(255, 0,   255), RGB(0,   0,   0)   };
-
     const int X_MAX = 1960;
     const int Y_MAX = 1080;
-    
-    //здесь написана какая-то ерунда
-
-    //float vx1 = 100;
-    //float vy1 = -70.0;
-
-    //float vx2 = 20.5;
-    //float vy2 = -45.0;
-
-    //float vx3 = 20.5;
-    //float vy3 = 45.0;
 
     const float DT = 0.1;
 
-    int redFill   = 0;
-    int greenFill = 0;
+    int redFill   = 10;
+    int greenFill = 10;
     int blueFill  = 0;
     COLORREF fillColor = RGB (redFill, greenFill, blueFill);
     COLORREF lineColor = RGB (redFill, greenFill, blueFill);
 
-    //int sphereRadius1 = 50;
-    //int sphereRadius2 = 50;
-    //int sphereRadius3 = 50;
     int numberOfCicles = 50;
     int numberOfCiclesInDrawTrack = 10;
 
-    //int red1 = 0;
-    //int green1 = 0;
-    //int blue1 = 255;
+    Vector2f positionSphere1 {200, 100};
+    Vector2f velositySphere1 { 0, 0 };
 
-    //int red2 = 255;
-    //int green2 = 0;
-    //int blue2 = 0;
+    int sphereRadius1 = 50;
+    const float SPHERE_MASS_1 = 1;
 
-    //int red3 = 255;
-    //int green3 = 255;
-    //int blue3 = 255;
+    COLORREF colorSphere1 = RGB(0, 0, 255);
+    COLORREF colorTrackSphere1 = RGB(0, 0, 50);
 
-    //int redTrack = 0;
-    //int greenTrack = 0;
-    //int blueTrack = 75;
-
-    //float x1 = 600;
-    //float y1 = 200;
-
-    //float x2 = 1200;
-    //float y2 = 800;
-
-    //float x3 = 200;
-    //float y3 = 800;
-
-    //float xOld1 = 600;
-    //float yOld1 = 200;
-
-    //float xOld2 = 1200;
-    //float yOld2 = 800;
-
-    //float xOld3 = 200;
-    //float yOld3 = 800;
-
-    //const int MASS_1 = 1;
-    //const int MASS_2 = 50;
-    //const int MASS_3 = 1;
-
-    //float ax1 = 0;
-    //float ay1 = 0;
-
-    //float ax2 = 0;
-    //float ay2 = 0;
-
-    //float ax3 = 0.001;
-    //float ay3 = 0.001;
+    Sphere sphere1 { positionSphere1,     positionSphere1,     velositySphere1,     Vector2f {0, 0}, sphereRadius1, SPHERE_MASS_1, colorSphere1,       colorTrackSphere1 };
+    Sphere sphere2 { Vector2f {600, 100}, Vector2f {600, 100}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             RGB(0,   255, 255), fillColor         };
+    Sphere sphere3 { Vector2f {200, 400}, Vector2f {200, 400}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             RGB(255, 0,   255), fillColor         };
 
     float controllability = 20;
 
