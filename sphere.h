@@ -1,4 +1,3 @@
-//#include "TXLib.h"
 #include "SFML/Graphics.hpp"
 #include <iostream>
 #include <math.h>
@@ -23,11 +22,6 @@ struct Sphere
 
 void drawSphere(sf::RenderWindow* window, Sphere* sphere, int numberOfCicles, bool constColour = false)
 {
-    //sf::Color fillColor = txGetFillColor();
-    //sf::Color lineColor = txGetColor();
-
-    //unsigned 
-
     int red = sphere->colorSphere.r;
     int green = sphere->colorSphere.g;
     int blue = sphere->colorSphere.b;
@@ -56,16 +50,12 @@ void drawSphere(sf::RenderWindow* window, Sphere* sphere, int numberOfCicles, bo
 
         sf::Color currentCicleColor = sf::Color(currentCicleRed, currentCicleGreen, currentCicleBlue);
 
-        //txSetColour(RGB(currentCicleRed, currentCicleGreen, currentCicleBlue));
         sf::CircleShape cicle = sf::CircleShape(currentCicleRadius);
         cicle.setFillColor(currentCicleColor);
         cicle.setOutlineColor(currentCicleColor);
         cicle.setPosition(x - currentCicleRadius, y - currentCicleRadius);
         window->draw(cicle);
     }
-
-    //txSetFillColour(fillColor);
-    //txSetColour(lineColor);
 }
 
 void moveSphere(Sphere* sphere, const float DT)
@@ -157,12 +147,7 @@ void changeSpeedSphereOnCollision(Sphere* sphere1,
 
 void drawTrack(sf::RenderWindow* window, Sphere* sphere, int numberOfCiclesInDrawTrack)
 {
-    //COLORREF fillColor = txGetFillColor();
-    //COLORREF lineColor = txGetColor();
-
     sf::Color trackColor = sphere->colorTrack;
-
-    //txSetColour(sphere->colorTrack);
 
     float xNew = sphere->position.x;
     float yNew = sphere->position.y;
@@ -170,25 +155,19 @@ void drawTrack(sf::RenderWindow* window, Sphere* sphere, int numberOfCiclesInDra
     float yOld = sphere->oldPosition.y;
     float radius = sphere->radius;
 
-    //std::cout << 1;
-
     for (int i = 0; i <= numberOfCiclesInDrawTrack; ++i)
     {
-        //txCircle(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack, radius);
-        //sf::CircleShape cicle = sf::CircleShape(radius);
-        //cicle.setFillColor(trackColor);
-        //cicle.setOutlineColor(trackColor);
-        //cicle.setPosition(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack - radius, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack - radius);
-        //window -> draw(cicle);
+        sf::CircleShape cicle = sf::CircleShape(radius);
+        cicle.setFillColor(trackColor);
+        cicle.setOutlineColor(trackColor);
+        cicle.setPosition(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack - radius, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack - radius);
+        window -> draw(cicle);
     }
 
     Sphere sphereOld{ Vector2f { xOld, yOld}, Vector2f { xOld, yOld}, Vector2f { 0, 0 }, Vector2f { 0, 0 },
            radius, 0, sphere->colorTrack, sphere->colorTrack };
 
     drawSphere(window, &sphereOld, numberOfCiclesInDrawTrack, true);
-
-    //txSetFillColour(fillColor);
-    //txSetColour(lineColor);
 }
 
 void controlSphere(Sphere* sphere, const float controllability, const float coefficientSlowdown)
@@ -199,8 +178,6 @@ void controlSphere(Sphere* sphere, const float controllability, const float coef
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
         sf::Vector2i position = sf::Mouse::getPosition();
-        //double mouseX = txMouseX();
-        //double mouseY = txMouseY();
 
         float differnceMouseXAndX1 = position.x - sphere->position.x;
         float differnceMouseYAndY1 = position.y - sphere->position.y;

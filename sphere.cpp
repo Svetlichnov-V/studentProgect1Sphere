@@ -1,4 +1,3 @@
-//#include "TXLib.h"
 #include "SFML/Graphics.hpp"
 #include <iostream>
 #include <math.h>
@@ -42,10 +41,6 @@ int main()
     window.display();
     window.clear(fillColor);
     window.display();
-    //txCreateWindow(X_MAX, Y_MAX);
-    //txSetFillColour(fillColor);
-    //txSetColour(lineColor);
-    //txClear();
 
     while (window.isOpen())
     {
@@ -88,26 +83,13 @@ int main()
         moveSphere(&sphere2, DT);
         moveSphere(&sphere3, DT);
 
-        //txBegin();
-
-        //drawSphere(&window, &sphere1, numberOfCicles);
-        //drawSphere(&window, &sphere2, numberOfCicles);
-        //drawSphere(&window, &sphere3, numberOfCicles);
-
-        //window.pushGLStates();
-
         drawTrack(&window, &sphere1, numberOfCiclesInDrawTrack);
         drawTrack(&window, &sphere2, numberOfCiclesInDrawTrack);
         drawTrack(&window, &sphere3, numberOfCiclesInDrawTrack);
 
-        //window.pushGLStates();
-        //window.clear(fillColor);
-
         drawSphere(&window, &sphere1, numberOfCicles);
         drawSphere(&window, &sphere2, numberOfCicles);
         drawSphere(&window, &sphere3, numberOfCicles);
-
-        //window.popGLStates();
 
         window.display();
 
@@ -120,8 +102,6 @@ int main()
         drawSphere(&window, &sphere3, numberOfCicles);
 
         window.display();
-
-        //txEnd();
     }
     return 0;
 }
