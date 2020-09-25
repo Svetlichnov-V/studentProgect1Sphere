@@ -26,12 +26,12 @@ int main()
     int sphereRadius1 = 50;
     const float SPHERE_MASS_1 = 1;
 
-    sf::Color colorSphere1      = sf::Color(0, 0, 255);
+    sf::Color colorSphere1 = sf::Color(0, 0, 255);
     sf::Color colorTrackSphere1 = sf::Color(0, 0, 100);
 
     Sphere sphere1{ positionSphere1,     positionSphere1,     velositySphere1,     Vector2f {0, 0}, sphereRadius1, SPHERE_MASS_1, colorSphere1,             colorTrackSphere1 };
-    Sphere sphere2{ Vector2f {600, 100}, Vector2f {600, 100}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             sf::Color(0,   255, 255), fillColor         };
-    Sphere sphere3{ Vector2f {200, 400}, Vector2f {200, 400}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             sf::Color(255, 0,   255), fillColor         };
+    Sphere sphere2{ Vector2f {600, 100}, Vector2f {600, 100}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             sf::Color(0,   255, 255), fillColor };
+    Sphere sphere3{ Vector2f {200, 400}, Vector2f {200, 400}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             sf::Color(255, 0,   255), fillColor };
 
     float controllability = 20;
 
@@ -39,13 +39,24 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(X_MAX, Y_MAX), "Main window");
     window.clear(fillColor);
+    window.display();
+    window.clear(fillColor);
+    window.display();
     //txCreateWindow(X_MAX, Y_MAX);
     //txSetFillColour(fillColor);
     //txSetColour(lineColor);
     //txClear();
 
-    while (true)
+    while (window.isOpen())
     {
+        sf::Event event;
+
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
         sphere1.acceleration.x = 0;
         sphere1.acceleration.y = 0;
 
@@ -83,7 +94,7 @@ int main()
         //drawSphere(&window, &sphere2, numberOfCicles);
         //drawSphere(&window, &sphere3, numberOfCicles);
 
-        window.pushGLStates();
+        //window.pushGLStates();
 
         drawTrack(&window, &sphere1, numberOfCiclesInDrawTrack);
         drawTrack(&window, &sphere2, numberOfCiclesInDrawTrack);
@@ -96,7 +107,17 @@ int main()
         drawSphere(&window, &sphere2, numberOfCicles);
         drawSphere(&window, &sphere3, numberOfCicles);
 
-        window.popGLStates();
+        //window.popGLStates();
+
+        window.display();
+
+        drawTrack(&window, &sphere1, numberOfCiclesInDrawTrack);
+        drawTrack(&window, &sphere2, numberOfCiclesInDrawTrack);
+        drawTrack(&window, &sphere3, numberOfCiclesInDrawTrack);
+
+        drawSphere(&window, &sphere1, numberOfCicles);
+        drawSphere(&window, &sphere2, numberOfCicles);
+        drawSphere(&window, &sphere3, numberOfCicles);
 
         window.display();
 

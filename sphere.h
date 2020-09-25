@@ -58,10 +58,10 @@ void drawSphere(sf::RenderWindow* window, Sphere* sphere, int numberOfCicles, bo
 
         //txSetColour(RGB(currentCicleRed, currentCicleGreen, currentCicleBlue));
         sf::CircleShape cicle = sf::CircleShape(currentCicleRadius);
-        cicle.setFillColor   (currentCicleColor);
+        cicle.setFillColor(currentCicleColor);
         cicle.setOutlineColor(currentCicleColor);
         cicle.setPosition(x - currentCicleRadius, y - currentCicleRadius);
-        window -> draw(cicle);
+        window->draw(cicle);
     }
 
     //txSetFillColour(fillColor);
@@ -161,7 +161,7 @@ void drawTrack(sf::RenderWindow* window, Sphere* sphere, int numberOfCiclesInDra
     //COLORREF lineColor = txGetColor();
 
     sf::Color trackColor = sphere->colorTrack;
-    
+
     //txSetColour(sphere->colorTrack);
 
     float xNew = sphere->position.x;
