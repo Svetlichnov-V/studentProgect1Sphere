@@ -29,8 +29,8 @@ int main()
     sf::Color colorTrackSphere1 = sf::Color(0, 0, 100);
 
     Sphere sphere1{ positionSphere1,     positionSphere1,     velositySphere1,     Vector2f {0, 0}, sphereRadius1, SPHERE_MASS_1, colorSphere1,             colorTrackSphere1 };
-    Sphere sphere2{ Vector2f {600, 100}, Vector2f {600, 100}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             sf::Color(0,   255, 255), fillColor };
-    Sphere sphere3{ Vector2f {200, 400}, Vector2f {200, 400}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            1,             sf::Color(255, 0,   255), fillColor };
+    Sphere sphere2{ Vector2f {600, 100}, Vector2f {600, 100}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            50,             sf::Color(0,   255, 255), fillColor };
+    Sphere sphere3{ Vector2f {200, 400}, Vector2f {200, 400}, Vector2f {20, 10},   Vector2f {0, 0}, 50,            50,             sf::Color(255, 0,   255), fillColor };
 
     float controllability = 20;
 

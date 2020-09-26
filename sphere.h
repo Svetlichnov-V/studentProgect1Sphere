@@ -12,7 +12,7 @@ struct Sphere
 {
     Vector2f position;
     Vector2f oldPosition;
-    Vector2f velosity;
+    Vector2f velocity;
     Vector2f acceleration;
     int radius;
     const float MASS;
@@ -26,9 +26,9 @@ void drawSphere(sf::RenderWindow* window, Sphere* sphere, int numberOfCicles, bo
     int green = sphere->colorSphere.g;
     int blue = sphere->colorSphere.b;
 
-    int currentCicleRed = red;
-    int currentCicleGreen = green;
-    int currentCicleBlue = blue;
+    int currentCircleRed = red;
+    int currentCircleGreen = green;
+    int currentCircleBlue = blue;
 
     int sphereRadius = sphere->radius;
 
@@ -39,42 +39,42 @@ void drawSphere(sf::RenderWindow* window, Sphere* sphere, int numberOfCicles, bo
     {
         if (!constColour)
         {
-            currentCicleRed = red * i / numberOfCicles;
-            currentCicleGreen = green * i / numberOfCicles;
-            currentCicleBlue = blue * i / numberOfCicles;
+            currentCircleRed = red * i / numberOfCicles;
+            currentCircleGreen = green * i / numberOfCicles;
+            currentCircleBlue = blue * i / numberOfCicles;
         }
 
-        int currentCicleRadius = sphereRadius - sphereRadius * i / numberOfCicles;
+        int currentCircleRadius = sphereRadius - sphereRadius * i / numberOfCicles;
         int x = x0 + (sphereRadius * i / 2) / numberOfCicles;
         int y = y0 - (sphereRadius * i / 2) / numberOfCicles;
 
-        sf::Color currentCicleColor = sf::Color(currentCicleRed, currentCicleGreen, currentCicleBlue);
+        sf::Color currentCircleColor = sf::Color(currentCircleRed, currentCircleGreen, currentCircleBlue);
 
-        sf::CircleShape cicle = sf::CircleShape(currentCicleRadius);
-        cicle.setFillColor(currentCicleColor);
-        cicle.setOutlineColor(currentCicleColor);
-        cicle.setPosition(x - currentCicleRadius, y - currentCicleRadius);
-        window->draw(cicle);
+        sf::CircleShape circle = sf::CircleShape(currentCircleRadius);
+        circle.setFillColor(currentCircleColor);
+        circle.setOutlineColor(currentCircleColor);
+        circle.setPosition(x - currentCircleRadius, y - currentCircleRadius);
+        window->draw(circle);
     }
 }
 
 void moveSphere(Sphere* sphere, const float DT)
 {
-    sphere->position.x += sphere->velosity.x * DT + 0.5 * sphere->acceleration.x * DT * DT;
-    sphere->position.y += sphere->velosity.y * DT + 0.5 * sphere->acceleration.y * DT * DT;
+    sphere->position.x += sphere->velocity.x * DT + 0.5 * sphere->acceleration.x * DT * DT;
+    sphere->position.y += sphere->velocity.y * DT + 0.5 * sphere->acceleration.y * DT * DT;
 
-    sphere->velosity.x += sphere->acceleration.x * DT;
-    sphere->velosity.y += sphere->acceleration.y * DT;
+    sphere->velocity.x += sphere->acceleration.x * DT;
+    sphere->velocity.y += sphere->acceleration.y * DT;
 }
 
 void collisionSphere(Sphere* sphere, const int X_MAX, const int Y_MAX)
 {
-    if ((sphere->position.x > X_MAX - (sphere->radius) && (sphere->velosity.x) > 0)
-        || (sphere->position.x < (sphere->radius) && (sphere->velosity.x) < 0))
-        sphere->velosity.x = -sphere->velosity.x;
-    if ((sphere->position.y > Y_MAX - (sphere->radius) && (sphere->velosity.y) > 0)
-        || (sphere->position.y < (sphere->radius) && (sphere->velosity.y) < 0))
-        sphere->velosity.y = -sphere->velosity.y;
+    if ((sphere->position.x > X_MAX - (sphere->radius) && (sphere->velocity.x) > 0)
+        || (sphere->position.x < (sphere->radius) && (sphere->velocity.x) < 0))
+        sphere->velocity.x = -sphere->velocity.x;
+    if ((sphere->position.y > Y_MAX - (sphere->radius) && (sphere->velocity.y) > 0)
+        || (sphere->position.y < (sphere->radius) && (sphere->velocity.y) < 0))
+        sphere->velocity.y = -sphere->velocity.y;
 }
 
 bool isCollidedTwoSpheres(Sphere* sphere1, Sphere* sphere2)
@@ -124,8 +124,8 @@ void changeSpeedSphereOnCollision(Sphere* sphere1,
     float yAxis = sphere1->position.y - sphere2->position.y;
     float moduleAxis = pow(xAxis * xAxis + yAxis * yAxis, 0.5);
 
-    float projectionVectorOnSpeedSphere1 = projectionVector(sphere1->velosity.x, sphere1->velosity.y, xAxis, yAxis);
-    float projectionVectorOnSpeedSphere2 = projectionVector(sphere2->velosity.x, sphere2->velosity.y, xAxis, yAxis);
+    float projectionVectorOnSpeedSphere1 = projectionVector(sphere1->velocity.x, sphere1->velocity.y, xAxis, yAxis);
+    float projectionVectorOnSpeedSphere2 = projectionVector(sphere2->velocity.x, sphere2->velocity.y, xAxis, yAxis);
 
     float reducedMassSpheres = reducedMass(sphere1->MASS, sphere2->MASS);
 
@@ -134,14 +134,14 @@ void changeSpeedSphereOnCollision(Sphere* sphere1,
 
     if (dv1 < 0)
     {
-        sphere1->velosity.x += -2 * dv1 * xAxis / moduleAxis;
-        sphere1->velosity.y += -2 * dv1 * yAxis / moduleAxis;
+        sphere1->velocity.x += -2 * dv1 * xAxis / moduleAxis;
+        sphere1->velocity.y += -2 * dv1 * yAxis / moduleAxis;
     }
 
     if (dv2 < 0)
     {
-        sphere2->velosity.x += 2 * dv2 * xAxis / moduleAxis;
-        sphere2->velosity.y += 2 * dv2 * yAxis / moduleAxis;
+        sphere2->velocity.x += 2 * dv2 * xAxis / moduleAxis;
+        sphere2->velocity.y += 2 * dv2 * yAxis / moduleAxis;
     }
 }
 
@@ -157,11 +157,11 @@ void drawTrack(sf::RenderWindow* window, Sphere* sphere, int numberOfCiclesInDra
 
     for (int i = 0; i <= numberOfCiclesInDrawTrack; ++i)
     {
-        sf::CircleShape cicle = sf::CircleShape(radius);
-        cicle.setFillColor(trackColor);
-        cicle.setOutlineColor(trackColor);
-        cicle.setPosition(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack - radius, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack - radius);
-        window -> draw(cicle);
+        sf::CircleShape circle = sf::CircleShape(radius);
+        circle.setFillColor(trackColor);
+        circle.setOutlineColor(trackColor);
+        circle.setPosition(xNew + (xOld - xNew) * i / numberOfCiclesInDrawTrack - radius, yNew + (yOld - yNew) * i / numberOfCiclesInDrawTrack - radius);
+        window -> draw(circle);
     }
 
     Sphere sphereOld{ Vector2f { xOld, yOld}, Vector2f { xOld, yOld}, Vector2f { 0, 0 }, Vector2f { 0, 0 },
@@ -172,8 +172,8 @@ void drawTrack(sf::RenderWindow* window, Sphere* sphere, int numberOfCiclesInDra
 
 void controlSphere(Sphere* sphere, const float controllability, const float coefficientSlowdown)
 {
-    sphere->acceleration.x += -sphere->velosity.x * coefficientSlowdown;
-    sphere->acceleration.y += -sphere->velosity.y * coefficientSlowdown;
+    sphere->acceleration.x += -sphere->velocity.x * coefficientSlowdown;
+    sphere->acceleration.y += -sphere->velocity.y * coefficientSlowdown;
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
