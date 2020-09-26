@@ -40,7 +40,6 @@ int main()
     window.clear(fillColor);
     window.display();
     window.clear(fillColor);
-    window.display();
 
     while (window.isOpen())
     {
@@ -96,12 +95,6 @@ int main()
         drawTrack(&window, &sphere1, numberOfCiclesInDrawTrack);
         drawTrack(&window, &sphere2, numberOfCiclesInDrawTrack);
         drawTrack(&window, &sphere3, numberOfCiclesInDrawTrack);
-
-        drawSphere(&window, &sphere1, numberOfCicles);
-        drawSphere(&window, &sphere2, numberOfCicles);
-        drawSphere(&window, &sphere3, numberOfCicles);
-
-        window.display();
     }
     return 0;
 }
